@@ -87,6 +87,8 @@ kubectl auth can-i get secrets --namespace $NAMESPACE --as "system:serviceaccoun
 # the output should be yes
 
 kubectl patch svc argocd-server -n $NAMESPACE -p '{"spec": {"type": "LoadBalancer"}}'
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
+kubectl port-forward svc/argocd-server -n argocd 8080:443
 ### 
 ## Setup Backstage
 ###
@@ -101,7 +103,7 @@ export SOPS_PGP_FP="1718EB8A1E1575C1D845B1CBCC269999D1F6043B"
 gpg --list-secret-keys # verify secrets
 
 # encrypt secret
-sops --encrypt --pgp "${SOPS_PGP_FP}" --encrypted-regex '^(data|stringData)$' ./backstage/secrets/gh-secrets.yaml > ./backstage/templates/secrets.yaml
+sops --encrypt --pgp "${SOPS_PGP_FP}" ./backstage/secrets/gh-secrets.yaml > ./backstage/templates/secrets.yaml
 
 # 3. verify decrypted value
 sops --decrypt ./backstage/templates/secrets.yaml --pgp "${SOPS_PGP_FP}"
@@ -118,13 +120,7 @@ helm repo add bitnami https://charts.bitnami.com/bitnami
 helm dependencies build ./backstage
 helm install -n $NAMESPACE my-backstage backstage/
 
-kubectl apply -f application.yaml -n $NAMESPACE
-## Kustomization
-cd charts
-
-kustomize build .
-kustomize build . 
-kustomize build . | kubectl apply -f -
+kubectl apply -f ./backstage/application.yaml -n $NAMESPACE
 ```
 
 # TODO
