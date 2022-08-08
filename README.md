@@ -79,8 +79,10 @@ kubectl create namespace $NAMESPACE
 helm install argocd -n $NAMESPACE ./argo-cd
 
 # mount private key to decrypt secrets
-# gpg --armor --export-secret-keys "1718EB8A1E1575C1D845B1CBCC269999D1F6043B" > key.asc
-# kubectl create secret generic helm-secrets-private-keys --from-file=key.asc -n $NAMESPACE
+gpg --armor --export-secret-keys "1718EB8A1E1575C1D845B1CBCC269999D1F6043B" > key.asc
+kubectl create secret generic helm-secrets-private-keys --from-file=key.asc -n $NAMESPACE
+
+kubectl get secrets -n $NAMESPACE
 
 # verify if argocd-repo-server can retrieve secrets
 kubectl auth can-i get secrets --namespace $NAMESPACE --as "system:serviceaccount:${NAMESPACE}:argocd-repo-server"

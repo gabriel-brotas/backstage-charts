@@ -1610,10 +1610,18 @@ repoServer:
     - mountPath: /custom-tools
       name: custom-tools
 
+    - mountPath: /helm-secrets-private-keys/
+      name: helm-secrets-private-keys
+
   # -- Additional volumes to the repo server pod
   volumes: 
     - name: custom-tools
       emptyDir: {}
+      volumes:
+    - name: helm-secrets-private-keys
+      secret:
+        secretName: helm-secrets-private-keys
+  
   ## Use init containers to configure custom tooling
   ## https://argo-cd.readthedocs.io/en/stable/operator-manual/custom_tools/
   ## When using the volumes & volumeMounts section bellow, please comment out those above.
