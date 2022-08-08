@@ -1,0 +1,133 @@
+---
+# Source: backstage/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: backstage
+  namespace: "default" 
+  labels:
+    app.kubernetes.io/name: backstage
+    helm.sh/chart: backstage-1.0.0
+    app.kubernetes.io/instance: backstage
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: backstage
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  ports:
+    - name: http-backend
+      port: 7007
+      targetPort: backend
+      protocol: TCP
+      nodePort: null  
+  selector:
+    app.kubernetes.io/name: backstage
+    app.kubernetes.io/instance: backstage
+    app.kubernetes.io/component: backstage
+---
+# Source: backstage/templates/backstage.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backstage
+  namespace: "default"
+  labels: 
+    app.kubernetes.io/name: backstage
+    helm.sh/chart: backstage-1.0.0
+    app.kubernetes.io/instance: backstage
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: backstage
+  annotations:
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: backstage
+      app.kubernetes.io/instance: backstage
+      app.kubernetes.io/component: backstage
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: backstage
+        helm.sh/chart: backstage-1.0.0
+        app.kubernetes.io/instance: backstage
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/component: backstage
+    spec:
+      volumes:
+      containers:
+        - name: backstage-backend
+          image: ghcr.io/wexinc/global-backstage:0.0.10
+          imagePullPolicy: "IfNotPresent"
+          args:
+          envFrom:
+            - secretRef:
+                name: backstage-secrets
+          env:
+            - name: APP_CONFIG_backend_listen_port
+              value: "7007"
+            - name: POSTGRES_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: pg-host
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: pg-user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: pg-password
+          ports:
+            - name: backend
+              containerPort: 7007
+              protocol: TCP
+---
+# Source: backstage/templates/secrets.yaml
+apiVersion: ENC[AES256_GCM,data:2Ng=,iv:gRdhEDlAgIMlVck468tKtl1+siS4RuyzD+kZCQmrxVs=,tag:ODSrVT0EoVuHCS1aMurhsw==,type:str]
+kind: ENC[AES256_GCM,data:mNhVfNN+,iv:DlplwDDYiDI71V1GQcTPEpYN2VvYvReSYFplOZnkVpk=,tag:6/H9CqOWoLT67qQXAt5xww==,type:str]
+metadata:
+    name: ENC[AES256_GCM,data:9Wj+eLXihYBEiIR6J2qoOg==,iv:aiRVBbbi2H7TJxXqk2p966jWTSmY+/+mx3t8/mDOQpc=,tag:/ZRKakpaUhTTjFG5xPVaVw==,type:str]
+type: ENC[AES256_GCM,data:XN5TvdYvu3WARwmo6YRNJAAy57ybRNs=,iv:ndyDWpgmkmfskJHLnCEPmzF8/k6Md8nvY7NP2FlKEhc=,tag:HAGx9+sIFyPR5tz5C6932w==,type:str]
+data:
+    AZURE_TOKEN: ENC[AES256_GCM,data:HTx1McnvOTMPENiyRluoxftC0jviBEzi8arEDILFrIGZEhHNPfOZB+0+jF+qQUEZklmt/w==,iv:y61FF4GB9FfQ6isV/A0wc3IQwC8dT67z0sgMUx7hlqc=,tag:vdLaHwjB2tycETvtPKEI6w==,type:str]
+    GITHUB_TOKEN: ENC[AES256_GCM,data:iR64iUpqVcktKFdmqVxm1150xwF0FoOiZjv3oomAjrYzSAfn1o8cew==,iv:/khjQviTIDDDa62qOwMsVim5dwBLuhyK/7M5loHecvk=,tag:t2cBe5ucrcPzuPsmN4htYg==,type:str]
+    AUTH_GITHUB_CLIENT_ID: ENC[AES256_GCM,data:XyLcTBmT/5BihH+N3bt2Ni9Lwjo=,iv:N/pwF16tfwO6xaK5H2QElGd7hfJJnmdSPYF5mHDEIhI=,tag:e5yLS1Es8O4hVMxQ7gLrsg==,type:str]
+    AUTH_GITHUB_CLIENT_SECRET: ENC[AES256_GCM,data:XZLPoFdD/obIoQbOMj6Y2q7Nvn4SbQl+2cTLld7wFwZ5xR2iDZr6MA==,iv:pz0sa0JleC5Tph4P/qevpXZjDYZNS5hkwikdtmEunZo=,tag:JYgE0FSC7fE0I9zx+Vox5Q==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age: []
+    lastmodified: "2022-07-29T22:49:57Z"
+    mac: ENC[AES256_GCM,data:/ahJe9yFvJVLDpamDs4E5J9TfQxaF5i5fu1fGc2kIx2bfgBr5zfHbi2ke9MHqiDLqvarV2QGVlxum/Im1hkE28ufe5J5ks5js+W8TPHi8Huudxgbw74/PQho5DrfdGWgE6qx4lfF1GTFhM1nbKRinY6XxcKO4M6gwI/Oq5bby0g=,iv:g5jzJrd9k+yiwKKB8o1ljtelzZYdfADnda7B4vL7Rh0=,tag:E0OEhh49Q0UvOHPFyOTxjQ==,type:str]
+    pgp:
+        - created_at: "2022-07-29T22:49:57Z"
+          enc: |
+            -----BEGIN PGP MESSAGE-----
+
+            hQIMA0gqLOl3ybdsAQ//bM1ZSD0SbMKJmUSPcorJJW+Hba+Orhdda1+tlcC4oqYg
+            ipTZmEhncOXnLsDNcVyA2+wW8DjrQA+Egyhx2mHO+L3SofjSOmTXQdqDCGD/MhiZ
+            voStQl1DZUxz2rnX70oRlhBFx0saNd5bvW0KExRXHxRiFx3/8j3iNWpd9syU6wnO
+            wmSgvvHGu4FfwUoKoIeocW2pFntcsdHvPbLWzkkt506bX6ZEykV6qzZqllvXSymH
+            Axouej+ACDwE+L87GPOlZWvi/+vXjchIqDADDZEEcCbgysx4qySWhbu/K2l2v+lq
+            PzZIKtPXElErSOZXhmmQpvStiHA8a217vPHgZPIOxB4LxfERL7ePKPVMRkk3/RCv
+            F4pQ0awbr8qIuA7H0QvclayKqm7Dj45L4pfzZRMpUYjCxrNTGkESF+/YuRQclcjn
+            LAG9la2TT6XpDSBoQwOSYPJJVFVGv3nBWTUDd6Fg8rWhHU1id7JpAXyNzRKi7Fmi
+            Ij20MwRUvI7fSVHxwlam0W35gp/6xX62JsBKIlx8QDp4FL+j+yybaBYOJDSjovtl
+            SzaBgXUsFbzdjNStoVcj6hFgmSoXfSpgv2suajczvHjZeBjteRPrWzOiwFwGaL9A
+            s41hNJoMyRECkq4FaEcQxzOBbOyw2GnKmJBP6Y8a7rYsHHUFvFPtGa0fo3AzTorU
+            aAEJAhDx+KcBakAKVz+qiYEkR44GsIZy0vPEJwlHq3hLiQoXWVgraJa2FETkk7IA
+            08dLJrtJ7GcMEl2Ppg5esaJTxcpVdd+2dxzVv5btxK9yTNDPsZ1KtpiTqGI+CxLA
+            yM4u5eanC1mF
+            =Gg3f
+            -----END PGP MESSAGE-----
+          fp: A1AE85BBE8889A860A142B98B8E3E6B0D66E1AFA
+    unencrypted_suffix: _unencrypted
+    version: 3.7.1

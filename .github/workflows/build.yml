@@ -1,0 +1,27 @@
+name: Build
+
+on:
+  pull_request:
+  push:
+    branches:
+      - 'master'
+      - 'main'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+      - name: Build
+        run: |
+          make validate
+      - name: Tag/Release on Push Action
+        uses: rymndhng/release-on-push-action@v0.25.0
+        with:
+          bump_version_scheme: patch
+          tag_prefix: v
+          use_github_release_notes: true
+

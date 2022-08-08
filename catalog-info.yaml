@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: global-backstage-helmcharts
+  description: Helm charts to deploy backstage
+  annotations:
+    github.com/project-slug: wexinc/global-backstage-helmsharts
+    datadoghq.com/site: datadoghq.com
+    backstage.io/adr-location: docs/adrs
+    backstage.io/techdocs-ref: dir:.
+spec:
+  type: templates
+  owner: ao-solutions-architecture
+  lifecycle: production

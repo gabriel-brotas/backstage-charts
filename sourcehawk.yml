@@ -1,0 +1,42 @@
+# see https://opensource.optum.com/sourcehawk-docs/docs/sourcehawk/
+file-protocols:
+  - name: Code Owners File
+    description: Must have a CODEOWNERS file with correct lines
+    repository-path: .github/CODEOWNERS
+  - name: Pull Request template
+    description: Must use a pull request template
+    repository-path: .github/pull_request_template.md
+  - name: Issues Template
+    description: Must use a bug report template
+    repository-path: .github/ISSUE_TEMPLATE/bug_report.md
+  - name: Feature Template
+    description: Must use a feature request template
+    repository-path: .github/ISSUE_TEMPLATE/feature_request.md
+  - name: Dependabot File
+    description: Must have a dependabot file
+    repository-path: .github/dependabot.yml
+  - name: GitHub Settings File
+    description: GitHub Settings Exists and extends template
+    repository-path: .github/settings.yml
+    enforcers:
+      - enforcer: .common.Contains
+        expected-substring: "_extends: 'global-settings:.github/settings.yml'"
+  - name: Git Ignore Present
+    description: .gitignore exists
+    repository-path: .gitignore
+  - name: Catalog Info
+    description: Repo must have a catalog-info.yaml file
+    repository-path: catalog-info.yaml
+    enforcers:
+      - enforcer: .yaml.YamlPathEquals
+        expectations:
+          '$.apiVersion': 'backstage.io/v1alpha1'
+          '$.kind': 'Resource'
+          '$.metadata.name': 'global-backstage-helmcharts'
+  - name: helloworld-java values
+    description: Check values file in backstage yaml
+    repository-path: charts/backstage/values.yaml
+    enforcers:
+      - enforcer: .yaml.YamlPathEquals
+        expectations:
+          '$.backstage.image.registry': ghcr.io/wexinc

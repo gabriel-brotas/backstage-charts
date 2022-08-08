@@ -1,0 +1,11 @@
+*.tgz
+charts/backstage/charts
+charts/backstage/secrets/*
+
+key.asc
+!charts/backstage/secrets/.gitkeep
+
+
+build
+values-secrets.yaml
+.idea
