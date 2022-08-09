@@ -3,12 +3,14 @@ kind: Application
 metadata:
   name: my-backstage
   namespace: argocd
+  labels:
+    name: my-backstage
 spec:
   project: default
 
   source:
     repoURL: https://github.com/gabriel-brotas/backstage-charts.git
-    targetRevision: main
+    targetRevision: HEAD
     path: charts/backstage
     helm:
       valueFiles:
@@ -18,6 +20,7 @@ spec:
         # secrets+age-import-kubernetes://<namespace>/<secret-name>#<key-name>.txt?<relative/path/to/the/encrypted/secrets.yaml>
         # Example Method 2: (Assumptions: namespace=argocd, secret-name=helm-secrets-private-keys, key-name=app, secret.yaml is in the root folder)
         # - secrets+gpg-import-kubernetes://argocd/helm-secrets-private-keys#key.asc?./templates/secrets.yaml
+        - secrets+gpg-import:///helm-secrets-private-keys/key.asc?./templates/secrets.yaml
         - secrets+gpg-import:///helm-secrets-private-keys/key.asc?./templates/secrets.yaml
   
   destination:

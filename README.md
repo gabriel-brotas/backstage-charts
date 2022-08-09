@@ -72,14 +72,15 @@ cd charts
 ### 
 ## Setup custom ArgoCD
 ###
-export NAMESPACE=argocd
+export NAMESPACE="argocd"
+export SOPS_PGP_FP="B327B20333401246E933FFDC3BD9A05BE89D04D0"
 
 kubectl create namespace $NAMESPACE
 
 helm install argocd -n $NAMESPACE ./argo-cd
 
 # mount private key to decrypt secrets
-gpg --armor --export-secret-keys "1718EB8A1E1575C1D845B1CBCC269999D1F6043B" > key.asc
+gpg --armor --export-secret-keys "B327B20333401246E933FFDC3BD9A05BE89D04D0" > key.asc
 kubectl create secret generic helm-secrets-private-keys --from-file=key.asc -n $NAMESPACE
 
 kubectl get secrets -n $NAMESPACE
@@ -95,10 +96,8 @@ kubectl port-forward svc/argocd-server -n argocd 8080:443
 ## Setup Backstage
 ###
 
-# 1. generate key
 # gpg --ful-generate-key
 # md5 phrase = deada0533f5704f36373162e898d0ec2
-export SOPS_PGP_FP="1718EB8A1E1575C1D845B1CBCC269999D1F6043B"
 
 # 1.1 verify secrets
 # gpg --export-secret-keys --armor "${SOPS_PGP_FP}"  # private key
