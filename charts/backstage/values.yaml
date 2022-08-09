@@ -102,7 +102,8 @@ backstage:
     ## pullSecrets:
     ##   - myRegistryKeySecretName
     ##
-    pullSecrets: []
+    pullSecrets: 
+      - gh-secrets
     ## Set to true if you would like to see extra information on logs
     ##
     debug: false
