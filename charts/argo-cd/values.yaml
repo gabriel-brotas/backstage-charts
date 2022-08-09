@@ -1731,9 +1731,9 @@ repoServer:
     # -- Repo server service account name
     name: "argocd-repo-server" # "argocd-repo-server"
     # -- Annotations applied to created service account
-    annotations: {}
+    # annotations: {}
     # -- Automount API credentials for the Service Account
-    automountServiceAccountToken: true
+    # automountServiceAccountToken: true
 
   # -- Additional containers to be added to the repo server pod
   extraContainers: []
