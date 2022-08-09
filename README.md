@@ -69,21 +69,19 @@ kubectl delete pvc data-dev-postgresql-0
 ```bash
 cd charts
 
-### 
-## Setup custom ArgoCD
-###
 export NAMESPACE="argocd"
 export SOPS_PGP_FP="B327B20333401246E933FFDC3BD9A05BE89D04D0"
 
+gpg --armor --export-secret-keys "${SOPS_PGP_FP}" > key.asc
 kubectl create namespace $NAMESPACE
+kubectl create secret generic helm-secrets-private-keys --from-file=key.asc -n $NAMESPACE
+kubectl get secrets -n $NAMESPACE
+
+### 
+## Setup custom ArgoCD
+###
 
 helm install argocd -n $NAMESPACE ./argo-cd
-
-# mount private key to decrypt secrets
-gpg --armor --export-secret-keys "B327B20333401246E933FFDC3BD9A05BE89D04D0" > key.asc
-kubectl create secret generic helm-secrets-private-keys --from-file=key.asc -n $NAMESPACE
-
-kubectl get secrets -n $NAMESPACE
 
 # verify if argocd-repo-server can retrieve secrets
 kubectl auth can-i get secrets --namespace $NAMESPACE --as "system:serviceaccount:${NAMESPACE}:argocd-repo-server"
@@ -105,10 +103,10 @@ kubectl port-forward svc/argocd-server -n argocd 8080:443
 gpg --list-secret-keys # verify secrets
 
 # encrypt secret
-sops --encrypt --pgp "${SOPS_PGP_FP}" ./backstage/secrets/gh-secrets.yaml > ./backstage/templates/secrets.yaml
+sops --encrypt --pgp "${SOPS_PGP_FP}" ./backstage/secrets/gh-secrets.yaml > ./backstage/secrets.yaml
 
 # 3. verify decrypted value
-sops --decrypt ./backstage/templates/secrets.yaml --pgp "${SOPS_PGP_FP}"
+sops --decrypt ./backstage/secrets.yaml --pgp "${SOPS_PGP_FP}"
 
 ##################
 ###

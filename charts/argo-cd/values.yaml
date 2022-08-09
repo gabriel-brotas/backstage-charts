@@ -1617,7 +1617,7 @@ repoServer:
   volumes: 
     - name: custom-tools
       emptyDir: {}
-      volumes:
+
     - name: helm-secrets-private-keys
       secret:
         secretName: helm-secrets-private-keys
@@ -1790,8 +1790,6 @@ repoServer:
 
           wget -qO- https://github.com/variantdev/vals/releases/download/v${VALS_VERSION}/vals_${VALS_VERSION}_linux_amd64.tar.gz | tar -xzf- -C /custom-tools/ vals;
           chmod +x /custom-tools/*
-
-          export GPG_TTY
       volumeMounts:
         - mountPath: /custom-tools
           name: custom-tools
