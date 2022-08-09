@@ -68,6 +68,7 @@ kubectl delete pvc data-dev-postgresql-0
 ## Secrets
 ```bash
 cd charts
+# md5 phrase = deada0533f5704f36373162e898d0ec2
 
 export NAMESPACE="argocd"
 export SOPS_PGP_FP="B327B20333401246E933FFDC3BD9A05BE89D04D0"
@@ -91,12 +92,31 @@ kubectl patch svc argocd-server -n $NAMESPACE -p '{"spec": {"type": "LoadBalance
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
 kubectl port-forward svc/argocd-server -n argocd 8080:443
 
+###
+## Encrypt secrets
+###
+# KMS --
+cd backstage
+helm secrets enc ./templates/secrets.yaml
+
+helm secrets view ./templates/secrets.yaml
+
+
+#Encrypting a file
+aws kms encrypt \
+    --key-id arn:aws:kms:us-east-1:158199044084:key/ed488c04-9be7-4371-8ab5-5e823d84c34b \
+    --plaintext fileb://backstage/secrets/gh-secrets.yaml \
+     --output text --query CiphertextBlob --region us-east-1 > Encrypteddatafile.yaml
+
+# Decoding base64 file to binary file
+cat Encrypteddatafile.base64 | base64 --decode > Encrypteddatafile
+
+
 ### 
 ## Setup Backstage
 ###
 
 # gpg --full-generate-key --rfc4880
-# md5 phrase = deada0533f5704f36373162e898d0ec2
 
 # 1.1 verify secrets
 # gpg --export-secret-keys --armor "${SOPS_PGP_FP}"  # private key
@@ -122,6 +142,7 @@ sops --decrypt ./backstage/secrets.yaml --pgp "${SOPS_PGP_FP}"
 
 kubectl apply -f ./backstage/application.yaml -n $NAMESPACE
 ```
+
 
 # TODO
 - backstage-backend and postgres secrets (csi secrets? sealed secrets? sops? manual?)

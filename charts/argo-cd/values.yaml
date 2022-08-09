@@ -1622,11 +1622,6 @@ repoServer:
     - name: helm-secrets-private-keys
       secret:
         secretName: helm-secrets-private-keys
-    
-    ### TST ---
-    - name: argo-tools
-      emptyDir: {}
-    ### TST ---
   
   ## Use init containers to configure custom tooling
   ## https://argo-cd.readthedocs.io/en/stable/operator-manual/custom_tools/
@@ -1732,10 +1727,15 @@ repoServer:
   ## Repo server service account
   ## If create is set to true, make sure to uncomment the name and update the rbac section below
   serviceAccount:
-    # -- Create repo server service account
     create: true
+    name: "argocd-repo-server"
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::158199044084:role/arch-dev-test-kms-secrets-role
+    automountServiceAccountToken: true
+    # -- Create repo server service account
+    # create: true
     # -- Repo server service account name
-    name: "argocd-repo-server" # "argocd-repo-server"
+    # name: "argocd-repo-server" # "argocd-repo-server"
     # -- Annotations applied to created service account
     # annotations: {}
     # -- Automount API credentials for the Service Account
@@ -1800,19 +1800,7 @@ repoServer:
       volumeMounts:
         - mountPath: /custom-tools
           name: custom-tools
-    ### TST ---
-    - name: argo-tools
-      image: alpine/helm
-      command: [sh, -c]
-      args:
-      - apk add git &&
-        apk add curl &&
-        apk add bash &&
-        helm plugin install https://github.com/futuresimple/helm-secrets
-      volumeMounts:
-      - mountPath: /root/.local/share/helm/plugins/
-        name: argo-tools
-    ### TST ---
+
 
   #  - name: download-tools
   #    image: alpine:3.8
