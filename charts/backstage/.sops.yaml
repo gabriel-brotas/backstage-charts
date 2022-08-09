@@ -9,5 +9,5 @@ creation_rules:
   # - pgp: '1718EB8A1E1575C1D845B1CBCC269999D1F6043B'
 
   - path_regex: .*.yaml
-    encrypted-regex: '^(data|stringData)$'
-    pgp: '1718EB8A1E1575C1D845B1CBCC269999D1F6043B'
+    # encrypted-regex: '^(data|stringData)$'
+    pgp: 'B327B20333401246E933FFDC3BD9A05BE89D04D0'
