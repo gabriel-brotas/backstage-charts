@@ -1730,7 +1730,7 @@ repoServer:
     create: true
     name: "argocd-repo-server"
     annotations:
-      eks.amazonaws.com/role-arn: arn:aws:iam::158199044084:role/arch-dev-test-kms-secrets-role
+      eks.amazonaws.com/role-arn: "arn:aws:iam::158199044084:role/arch-dev-test-kms-secrets-role"
     automountServiceAccountToken: true
     # -- Create repo server service account
     # create: true
