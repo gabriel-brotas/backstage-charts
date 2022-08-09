@@ -10,7 +10,7 @@ spec:
 
   source:
     repoURL: https://github.com/gabriel-brotas/backstage-charts.git
-    targetRevision: HEAD
+    targetRevision: main
     path: charts/backstage
     helm:
       valueFiles:
