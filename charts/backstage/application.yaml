@@ -10,11 +10,11 @@ spec:
 
   source:
     repoURL: https://github.com/gabriel-brotas/backstage-charts.git
-    targetRevision: main
+    targetRevision: HEAD
     path: charts/backstage
     helm:
       valueFiles:
-        - secrets://secrets.yaml
+        - "secrets://secrets.yaml"
 
         # ### Method 2: Fetch the gpg key from kubernetes secret
         # secrets+gpg-import-kubernetes://<namespace>/<secret-name>#<key-name>.asc?<relative/path/to/the/encrypted/secrets.yaml>
@@ -27,3 +27,7 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
+  syncPolicy:
+    automated: {}
+    syncOptions:
+      - CreateNamespace=true
