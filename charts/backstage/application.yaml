@@ -14,7 +14,7 @@ spec:
     path: charts/backstage
     helm:
       valueFiles:
-        - secrets://./templates/secrets.yaml
+        - secrets://secrets.yaml
 
         # ### Method 2: Fetch the gpg key from kubernetes secret
         # secrets+gpg-import-kubernetes://<namespace>/<secret-name>#<key-name>.asc?<relative/path/to/the/encrypted/secrets.yaml>
