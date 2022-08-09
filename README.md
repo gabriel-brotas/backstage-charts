@@ -81,7 +81,6 @@ kubectl get secrets -n $NAMESPACE
 ### 
 ## Setup custom ArgoCD
 ###
-
 helm install argocd -n $NAMESPACE ./argo-cd
 
 # verify if argocd-repo-server can retrieve secrets
@@ -95,50 +94,34 @@ kubectl port-forward svc/argocd-server -n argocd 8080:443
 ###
 ## Encrypt secrets
 ###
-# KMS --
+# KMS ---
+export SOPS_KMS_ARN="arn:aws:kms:us-east-1:158199044084:key/ed488c04-9be7-4371-8ab5-5e823d84c34b"
+
 cd backstage
-helm secrets enc ./templates/secrets.yaml
+helm secrets enc secrets.yaml
 
-helm secrets view ./templates/secrets.yaml
+helm secrets view secrets.yaml
 
+# SOPS - GPG ---
+gpg --full-generate-key --rfc4880
 
-#Encrypting a file
-aws kms encrypt \
-    --key-id arn:aws:kms:us-east-1:158199044084:key/ed488c04-9be7-4371-8ab5-5e823d84c34b \
-    --plaintext fileb://backstage/secrets/gh-secrets.yaml \
-     --output text --query CiphertextBlob --region us-east-1 > Encrypteddatafile.yaml
+# 1.1 verify secrets
+gpg --export-secret-keys --armor "${SOPS_PGP_FP}"  # private key
+gpg --list-secret-keys # verify secrets
 
-# Decoding base64 file to binary file
-cat Encrypteddatafile.base64 | base64 --decode > Encrypteddatafile
+# 1.2 encrypt secret
+sops --encrypt --pgp "${SOPS_PGP_FP}" ./backstage/secrets/gh-secrets.yaml > ./backstage/secrets.yaml
 
+# 1.3 verify decrypted value
+GPG_TTY=$(tty)
+export GPG_TTY
+sops --decrypt ./backstage/secrets.yaml --pgp "${SOPS_PGP_FP}"
 
 ### 
 ## Setup Backstage
 ###
-
-# gpg --full-generate-key --rfc4880
-
-# 1.1 verify secrets
-# gpg --export-secret-keys --armor "${SOPS_PGP_FP}"  # private key
-gpg --list-secret-keys # verify secrets
-
-# encrypt secret
-sops --encrypt --pgp "${SOPS_PGP_FP}" ./backstage/secrets/gh-secrets.yaml > ./backstage/secrets.yaml
-
-# 3. verify decrypted value
-sops --decrypt ./backstage/secrets.yaml --pgp "${SOPS_PGP_FP}"
-
-##################
-###
-## Troubleshooting
-###
-# GPG_TTY=$(tty)
-# export GPG_TTY
-###################
-
-# helm repo add bitnami https://charts.bitnami.com/bitnami
-# helm dependencies build ./backstage
-# helm install -n $NAMESPACE my-backstage backstage/
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm dependencies build ./backstage
 
 kubectl apply -f ./backstage/application.yaml -n $NAMESPACE
 ```

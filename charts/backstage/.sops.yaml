@@ -1,6 +1,7 @@
 creation_rules:
   # Encrypt with AWS KMS
   - kms: 'arn:aws:kms:us-east-1:158199044084:key/ed488c04-9be7-4371-8ab5-5e823d84c34b'
+    role: arn:aws:iam::158199044084:role/eksctl-gbrotas-arch-dev-nodegroup-NodeInstanceRole-1BIKC4ZUXTVJ
 
   # Encrypt using GCP KMS
   #- gcp_kms: projects/mygcproject/locations/global/keyRings/mykeyring/cryptoKeys/thekey
