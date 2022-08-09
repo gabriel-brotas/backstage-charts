@@ -92,11 +92,12 @@ kubectl auth can-i get secrets --namespace $NAMESPACE --as "system:serviceaccoun
 kubectl patch svc argocd-server -n $NAMESPACE -p '{"spec": {"type": "LoadBalancer"}}'
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
 kubectl port-forward svc/argocd-server -n argocd 8080:443
+
 ### 
 ## Setup Backstage
 ###
 
-# gpg --ful-generate-key
+# gpg --full-generate-key --rfc4880
 # md5 phrase = deada0533f5704f36373162e898d0ec2
 
 # 1.1 verify secrets
@@ -117,9 +118,9 @@ sops --decrypt ./backstage/templates/secrets.yaml --pgp "${SOPS_PGP_FP}"
 # export GPG_TTY
 ###################
 
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm dependencies build ./backstage
-helm install -n $NAMESPACE my-backstage backstage/
+# helm repo add bitnami https://charts.bitnami.com/bitnami
+# helm dependencies build ./backstage
+# helm install -n $NAMESPACE my-backstage backstage/
 
 kubectl apply -f ./backstage/application.yaml -n $NAMESPACE
 ```
