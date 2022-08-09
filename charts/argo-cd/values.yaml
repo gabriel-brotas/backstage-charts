@@ -1613,6 +1613,7 @@ repoServer:
     - mountPath: /helm-secrets-private-keys/
       name: helm-secrets-private-keys
 
+
   # -- Additional volumes to the repo server pod
   volumes: 
     - name: custom-tools
@@ -1621,6 +1622,11 @@ repoServer:
     - name: helm-secrets-private-keys
       secret:
         secretName: helm-secrets-private-keys
+    
+    ### TST ---
+    - name: argo-tools
+      emptyDir: {}
+    ### TST ---
   
   ## Use init containers to configure custom tooling
   ## https://argo-cd.readthedocs.io/en/stable/operator-manual/custom_tools/
@@ -1790,9 +1796,24 @@ repoServer:
 
           wget -qO- https://github.com/variantdev/vals/releases/download/v${VALS_VERSION}/vals_${VALS_VERSION}_linux_amd64.tar.gz | tar -xzf- -C /custom-tools/ vals;
           chmod +x /custom-tools/*
+
       volumeMounts:
         - mountPath: /custom-tools
           name: custom-tools
+    ### TST ---
+    - name: argo-tools
+      image: alpine/helm
+      command: [sh, -c]
+      args:
+      - apk add git &&
+        apk add curl &&
+        apk add bash &&
+        helm plugin install https://github.com/futuresimple/helm-secrets
+      volumeMounts:
+      - mountPath: /root/.local/share/helm/plugins/
+        name: argo-tools
+    ### TST ---
+
   #  - name: download-tools
   #    image: alpine:3.8
   #    command: [sh, -c]
