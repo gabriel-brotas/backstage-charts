@@ -15,12 +15,6 @@ spec:
     helm:
       valueFiles:
         - secrets+age-import-kubernetes://argocd/helm-secrets-private-keys#key.txt?secrets.yaml
-
-        # ### Method 2: Fetch the gpg key from kubernetes secret
-        # secrets+gpg-import-kubernetes://<namespace>/<secret-name>#<key-name>.asc?<relative/path/to/the/encrypted/secrets.yaml>
-        # secrets+age-import-kubernetes://<namespace>/<secret-name>#<key-name>.txt?<relative/path/to/the/encrypted/secrets.yaml>
-        # Example Method 2: (Assumptions: namespace=argocd, secret-name=helm-secrets-private-keys, key-name=app, secret.yaml is in the root folder)
-        # - secrets+gpg-import:///helm-secrets-private-keys/key.asc?secrets.yaml
   
   destination:
     server: https://kubernetes.default.svc
