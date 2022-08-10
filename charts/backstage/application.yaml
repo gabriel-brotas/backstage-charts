@@ -1,10 +1,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: my-backstage
+  name: backstage
   namespace: argocd
   labels:
-    name: my-backstage
+    name: backstage
 spec:
   project: default
 
