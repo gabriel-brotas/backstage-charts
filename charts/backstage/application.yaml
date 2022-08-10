@@ -12,9 +12,9 @@ spec:
     repoURL: https://github.com/gabriel-brotas/backstage-charts.git
     targetRevision: HEAD
     path: charts/backstage
-    # helm:
-    #   valueFiles:
-    #     - secrets+age-import-kubernetes://argocd/helm-secrets-private-keys#key.txt?secrets.yaml
+    helm:
+      valueFiles:
+        - secrets+age-import-kubernetes://argocd/helm-secrets-private-keys#key.txt?secrets.yaml
   
   destination:
     server: https://kubernetes.default.svc
