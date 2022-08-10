@@ -2,7 +2,7 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: gbrotas-arch-dev
+  name: arch-dev-test
   region: us-east-1
 
 vpc:
@@ -16,14 +16,14 @@ vpc:
         id: subnet-0db326c88e6531600
 
 managedNodeGroups:
-  - name: gbrotas-ng-default
+  - name: arch-dev-test-ng-default
     desiredCapacity: 2
     instanceType: t3.small
     privateNetworking: true
     tags:
-      Name: gbrotas-arch-dev-eks-mng
+      Name: arch-dev-test-eks-mng
       owner: gabriel.brotas@wexinc.com
       approle: eks
-      appid: gbrotas-arch-dev-eks-mng
+      appid: arch-dev-test-eks-mng
       billingid: WCORP-90330-9910-90000
       NOSCHEDULE: EKS
