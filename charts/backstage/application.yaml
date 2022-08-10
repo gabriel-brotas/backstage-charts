@@ -1,10 +1,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: test4
+  name: test5
   namespace: argocd
   labels:
-    name: test4
+    name: test5
 spec:
   project: default
 
