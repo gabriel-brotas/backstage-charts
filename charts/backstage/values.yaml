@@ -192,7 +192,7 @@ networkPolicy:
 postgresql:
 
   # -- Switch to enable or disable the PostgreSQL helm chart
-  enabled: false
+  enabled: true
 
   # -- The authentication details of the Postgres database
   auth:
