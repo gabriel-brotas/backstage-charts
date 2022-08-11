@@ -19,7 +19,6 @@ jobs:
             PACKAGE_TYPE: ${{ github.event.registry_package.package_type }}
             VERSION: ${{ github.event.registry_package.container_metadata.tag.name }}
           run: |
-            echo "$GITHUB_CONTEXT"
             echo $ACTION
             echo $PACKAGE_NAME
             echo $NAMESPACE
