@@ -1,12 +1,12 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: backstage
-  namespace: argocd
+  name: my-backstage-tst777
   labels:
-    name: backstage
+    name: my-backstage-tst777
+  namespace: argocd
 spec:
-  project: default
+  project: backstage
 
   source:
     repoURL: https://github.com/gabriel-brotas/backstage-charts.git
@@ -18,7 +18,7 @@ spec:
   
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
+    namespace: nstst
 
   syncPolicy:
     automated: {}

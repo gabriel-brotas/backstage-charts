@@ -1,27 +1,45 @@
-name: Build
+name: Trigger
 
 on:
-  pull_request:
-  push:
-    branches:
-      - 'master'
-      - 'main'
+  registry_package:
+    types: [published, updated]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-      - name: Build
-        run: |
-          make validate
-      - name: Tag/Release on Push Action
-        uses: rymndhng/release-on-push-action@v0.25.0
-        with:
-          bump_version_scheme: patch
-          tag_prefix: v
-          use_github_release_notes: true
+  trigger:
+      runs-on: ubuntu-latest
 
+      steps:
+        - name: Trigger helmchart repo
+          env:
+            GITHUB_CONTEXT: ${{ toJson(github) }}
+            ACTION: ${{ github.event.action }}
+            PACKAGE_NAME: ${{ github.event.package.name }}
+            NAMESPACE: ${{ github.event.package.namespace }}
+            ECOSYSTEM: ${{ github.event.package.ecosystem }}
+            PACKAGE_TYPE: ${{ github.event.package.package_type }}
+            VERSION: ${{ github.event.package.package_version }}
+          run: |
+            echo "$GITHUB_CONTEXT"
+            echo $ACTION
+            echo $PACKAGE_NAME
+            echo $NAMESPACE
+            echo $ECOSYSTEM
+            echo $PACKAGE_TYPE
+            echo $VERSION
+            
+            # event_payload_data() {
+            #   cat <<EOF
+            # {
+            #   "event_type": "global-backstage.new_image", 
+            #   "client_payload":{
+            #     "ref": "${{ github.ref }}",
+            #     "repository": "${{ github.repository }}",
+            #     "actor": "${{ github.event.pusher.name }}"
+            #   }
+            # }
+            # EOF
+            # }
+            # curl -X POST \
+            # -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            # https://api.github.com/repos/wexinc/global-backstage-helmcharts/dispatches \
+            # --data "$(event_payload_data)"   

@@ -1729,9 +1729,8 @@ repoServer:
   serviceAccount:
     create: true
     name: "argocd-repo-server"
-    annotations:
-      eks.amazonaws.com/role-arn: "arn:aws:iam::158199044084:role/arch-dev-test-kms-secrets-role"
-    automountServiceAccountToken: true
+    annotations: {}
+    
     # -- Create repo server service account
     # create: true
     # -- Repo server service account name
