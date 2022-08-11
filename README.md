@@ -101,6 +101,17 @@ Cleanup: the PVC is not deleted when you run `helm uninstall <release>`.  Subseq
 kubectl delete pvc data-dev-postgresql-0 
 ```
 
+### DOCKER
+```sh
+export CR_PAT=YOUR_TOKEN
+echo $CR_PAT | docker login ghcr.io -u USERNAME --password-stdin
+
+docker build -t ghcr.io/gabriel-brotas/backstage-charts:latest .
+
+# docker push ghcr.io/OWNER/IMAGE_NAME:latest
+docker push ghcr.io/gabriel-brotas/backstage-charts:latest
+```
+
 # TODO
 - backstage-backend and postgres secrets (csi secrets? sealed secrets? sops? manual?)
 - add ingress resource
