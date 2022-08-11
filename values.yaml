@@ -1,2 +1,5 @@
 env: qa
 namespace: helloworld-qa
+backstage:
+  image:
+    tag: 2.1.2
