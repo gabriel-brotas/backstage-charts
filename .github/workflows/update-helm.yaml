@@ -1,0 +1,26 @@
+name: Update
+
+on: 
+  workflow_dispatch:
+
+  registry_package:
+    types: [published, updated]
+
+env:
+  IMAGE_NAME: image
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Update Image Version in the related HelmChart values.yaml
+        uses: fjogeleit/yaml-update-action@main
+        with:
+          valueFile: 'charts/backstage/values.yaml'
+          propertyPath: 'backstage.image.tag'
+          value: 'v1.0.0'
+          branch: main
+          createPR: false
+          updateFile: true

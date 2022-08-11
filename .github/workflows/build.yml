@@ -15,14 +15,12 @@ jobs:
             ACTION: ${{ github.event.action }}
             PACKAGE_NAME: ${{ github.event.registry_package.name }}
             NAMESPACE: ${{ github.event.registry_package.namespace }}
-            ECOSYSTEM: ${{ github.event.registry_package.ecosystem }}
             PACKAGE_TYPE: ${{ github.event.registry_package.package_type }}
             VERSION: ${{ github.event.registry_package.package_version.container_metadata.tag.name }}
           run: |
             echo $ACTION
             echo $PACKAGE_NAME
             echo $NAMESPACE
-            echo $ECOSYSTEM
             echo $PACKAGE_TYPE
             echo $VERSION
             
