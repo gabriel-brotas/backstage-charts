@@ -1,7 +1,0 @@
-make --dry-run --always-make --keep-going --print-directory
-make: Entering directory `/Users/w506147/Desktop/Work/backstage/gb-backstage-helmcharts'
-rm -rf build
- 
-scripts/build.sh
-make: Leaving directory `/Users/w506147/Desktop/Work/backstage/gb-backstage-helmcharts'
- 
