@@ -23,6 +23,6 @@ jobs:
 
   trigger:
     # uses: gabriel-brotas/backstage-charts/.github/workflows/update-helm.yml@main
-    uses: ${{github.event.repository.full_name}}./github/workflows/update-helm.yml@main
+    uses: '"${{github.event.repository.full_name}}"./github/workflows/update-helm.yml@main'
     with:
       username: mona
