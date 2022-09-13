@@ -24,4 +24,4 @@ jobs:
   trigger:
     uses: gabriel-brotas/backstage-charts/.github/workflows/update-helm.yml@main
     with:
-      username: mona
+      package: '${{ github.repository }}'

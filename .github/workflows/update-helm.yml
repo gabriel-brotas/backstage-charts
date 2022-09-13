@@ -3,7 +3,7 @@ name: Update Chart Version
 on: 
   workflow_call:
     inputs:
-      username:
+      package:
         required: true
         type: string
 
