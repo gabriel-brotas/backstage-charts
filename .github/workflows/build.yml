@@ -11,6 +11,8 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.step1.outputs.test }}
     steps:
       - uses: actions/checkout@v2
       
@@ -20,8 +22,14 @@ jobs:
           cat << OBJECT
           ${{ toJson(github.event) }}
           OBJECT
+      
+      - name: output
+        id: step1
+        run: echo "::set-output name=test::hello"
+
 
   trigger:
     uses: gabriel-brotas/backstage-charts/.github/workflows/update-helm.yml@main
+    needs: build
     with:
-      package: '${{ github.repository }}'
+      package: '${{ needs.build.outputs.output1}}'
