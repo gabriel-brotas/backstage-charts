@@ -21,6 +21,7 @@ jobs:
           ${{ toJson(github.event) }}
           OBJECT
 
-      - uses: gabriel-brotas/backstage-charts/.github/workflows/update-helm.yml@main
-        with:
-          username: mona
+  trigger:
+    uses: gabriel-brotas/backstage-charts/.github/workflows/update-helm.yml@main
+    with:
+      username: mona
