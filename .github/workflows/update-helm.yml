@@ -1,0 +1,24 @@
+name: Update Chart Version
+
+on: 
+  workflow_call:
+    inputs:
+      username:
+        required: true
+        type: string
+
+env:
+  IMAGE_NAME: 'myimage'
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Event Information
+        run: |
+          echo "<<<-------- Metadata -------->>> "
+          cat << OBJECT
+          ${{ toJson(github.event) }}
+          OBJECT

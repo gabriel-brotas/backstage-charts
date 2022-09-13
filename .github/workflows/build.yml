@@ -1,0 +1,23 @@
+name: Build
+
+on: workflow_dispatch
+
+env:
+  IMAGE_NAME: 'myimage'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: log
+        run: |
+          echo "<<<-------- Metadata -------->>> "
+          cat << OBJECT
+          ${{ toJson(github.event) }}
+          OBJECT
+
+      - uses: gabriel-brotas/backstage-charts/.github/workflows/update-helm.yml@main
+        with:
+          username: mona
