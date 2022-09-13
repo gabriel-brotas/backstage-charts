@@ -22,3 +22,10 @@ jobs:
           cat << OBJECT
           ${{ toJson(github.event) }}
           OBJECT
+      
+      - name: Inputs
+        run: |
+          echo "<<<-------- INPUT -------->>> "
+          cat << OBJECT
+          ${{ toJson(inputs) }}
+          OBJECT
