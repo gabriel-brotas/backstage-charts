@@ -1,0 +1,31 @@
+name: build
+on:
+  pull_request:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+      
+      - name: log
+        run: cat manifest.yaml
+
+      - name: update manifest2
+        run: |
+          yq -i e '.myapp.image.tag |= "1.xx"' manifest2.yaml
+
+      - name: Update helm image version
+        uses: fjogeleit/yaml-update-action@main
+        with:
+          valueFile: 'manifest.yaml'
+          propertyPath: 'myapp.image.tag'
+          value: '2.0.0'
+          branch: main
+          commitChange: true
+          updateFile: true
+          message: 'update imageVersion'
