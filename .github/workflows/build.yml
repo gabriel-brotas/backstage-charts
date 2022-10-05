@@ -1,35 +1,39 @@
-name: Build
+name: build
 
 on: 
+  workflow_call:
+  
   workflow_dispatch:
-  push:
-    branches: [main]
-
-env:
-  IMAGE_NAME: 'myimage'
 
 jobs:
-  build:
+  ci:
     runs-on: ubuntu-latest
-    outputs:
-      output1: ${{ steps.step1.outputs.test }}
+    strategy:
+      matrix:
+        env: [dev, prod]
+        include:
+          - env: dev
+            commitChange: true
+            createPR: false
+          
+          - env: prod
+            commitChange: false
+            createPR: true
+
     steps:
-      - uses: actions/checkout@v2
-      
-      - name: log
-        run: |
-          echo "<<<-------- Metadata -------->>> "
-          cat << OBJECT
-          ${{ toJson(github.event) }}
-          OBJECT
-      
-      - name: output
-        id: step1
-        run: echo "::set-output name=test::hello"
+      - name: Checkout Repo
+        uses: actions/checkout@v3
 
-
-  trigger:
-    uses: gabriel-brotas/backstage-charts/.github/workflows/update-helm.yml@main
-    needs: build
-    with:
-      package: '${{ needs.build.outputs.output1}}'
+      - name: Update helm image version
+        uses: fjogeleit/yaml-update-action@main
+        with:
+          valueFile: '${{ matrix.env }}/manifest.yaml'
+          propertyPath: 'myapp.image.tag'
+          value: '2.0.2'
+          # repository: wexinc/global-backstage-helmcharts
+          branch: main
+          commitChange: ${{ matrix.commitChange }}
+          createPR: ${{ matrix.createPR }}
+          updateFile: true
+          message: 'update imageVersion'
+          # token: ${{ secrets.ACCESS_TOKEN }}
